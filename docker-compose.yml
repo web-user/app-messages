@@ -1,0 +1,70 @@
+version: '3'
+
+networks:
+  web_nw:
+    driver: bridge
+volumes:
+  static-ui-content:
+
+
+services:
+
+  postgres:
+    container_name: mess_db
+    image: postgres:12.4
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=mess_db
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      default:
+        aliases:
+          - postgres
+
+  api:
+    container_name: api
+    build: backend
+    env_file: .env
+    restart: always
+    # command: sh -c 'cd backend && python manage.py runserver 0.0.0.0:8002 '
+    command: bash -c "cd backend && gunicorn core.wsgi --bind 0.0.0.0:8002" 
+    volumes:
+        - .:/dockyard
+    environment:
+      - DEV_MODE=False
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SECRET_KEY=dfgkdsfls234
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=mess_db
+      - POSTGRES_PORT=5430
+
+    ports:
+      - 8002:8002
+    links:
+      - postgres
+
+
+  frontend:
+    restart: always
+    build:  
+      context: ./ui
+      dockerfile: Dockerfile.dev
+    container_name: frontend
+    image: frontend_image
+    depends_on:
+      - api
+    volumes:
+      - ./ui/nginx:/etc/nginx/conf.d
+    ports:
+      - 8083:8083
+
