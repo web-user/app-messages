@@ -15,18 +15,15 @@ $ docker-compose exec postgres bash
 ### Local urls API
 
 ```
-$ http://0.0.0.0:8000/persons/ - list and create persons (Student/Teacher)
-$ http://0.0.0.0:8000/person-detail/<int:pk>/ - Detail Update Destroy
-$ http://0.0.0.0:8000/course-list/ - list course, related persons
-$ http://0.0.0.0:8000/member-list/ - create member
-$ http://0.0.0.0:8000/my-course-list - my members
-```
+$ http://0.0.0.0:8083/api/users/ - cusers
+$ http://0.0.0.0:8083/api/message-detail/7/ - message  detail api
+ ```
 
 ### Local urls FRONT
 
 ```
-$ http://localhost:8080/#/chat - Messages
-$ http://localhost:8080/#/sing-up - sing  up page
-$ http://localhost:8080/#/login - login
+$ http://0.0.0.0:8083/#/chat - Messages
+$ http://0.0.0.0:8083/#/sing-up - sing  up page
+$ http://localhost:8083/#/login - login
 ```
 
